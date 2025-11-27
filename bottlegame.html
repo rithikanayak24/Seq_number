@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Bottle Game - Draggable Button</title>
+    <style>
+        html,body { height:100%; margin:0; }
+        body {
+            background:#f3f4f6;
+            font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+            user-select:none; /* avoid accidental text selection while dragging */
+            overflow:hidden;
+        }
+
+        /* draggable button */
+        #drag-btn {
+            position: absolute;
+            left: 40px;
+            top: 40px;
+            width: 110px;
+            height: 48px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(180deg,#06b6d4,#0ea5a3);
+            color:#fff;
+            font-weight:600;
+            cursor:grab;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            touch-action:none; /* allow pointer events for touch */
+            box-shadow:0 6px 14px rgba(2,6,23,0.12);
+        }
+        #drag-btn:active { cursor:grabbing; transform:translateY(1px); }
+        #drag-btn.dragging { box-shadow:0 12px 28px rgba(2,6,23,0.18); }
+    </style>
+</head>
+<body>
+    <button id="drag-btn" aria-label="Draggable button">Drag me</button>
+
+    <script>
+        (function () {
+            const btn = document.getElementById('drag-btn');
+            let offsetX = 0, offsetY = 0;
+            let dragging = false;
+
+            function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+            btn.addEventListener('pointerdown', (e) => {
+                // start dragging
+                btn.setPointerCapture(e.pointerId);
+                const rect = btn.getBoundingClientRect();
+                offsetX = e.clientX - rect.left;
+                offsetY = e.clientY - rect.top;
+                dragging = true;
+                btn.classList.add('dragging');
+            });
+
+            document.addEventListener('pointermove', (e) => {
+                if (!dragging) return;
+                // compute new position and keep button inside viewport
+                const bw = btn.offsetWidth, bh = btn.offsetHeight;
+                const x = clamp(e.clientX - offsetX, 0, window.innerWidth - bw);
+                const y = clamp(e.clientY - offsetY, 0, window.innerHeight - bh);
+                btn.style.left = x + 'px';
+                btn.style.top = y + 'px';
+            });
+
+            document.addEventListener('pointerup', (e) => {
+                if (!dragging) return;
+                try { btn.releasePointerCapture(e.pointerId); } catch (err) {}
+                dragging = false;
+                btn.classList.remove('dragging');
+            });
+
+            // optional: window resize keeps button visible
+            window.addEventListener('resize', () => {
+                const bw = btn.offsetWidth, bh = btn.offsetHeight;
+                const rect = btn.getBoundingClientRect();
+                const x = clamp(rect.left, 0, window.innerWidth - bw);
+                const y = clamp(rect.top, 0, window.innerHeight - bh);
+                btn.style.left = x + 'px';
+                btn.style.top = y + 'px';
+            });
+        })();
+    </script>
+</body>
+</html>

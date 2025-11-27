@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Number Game - Home</title>
+		<link rel="stylesheet" href="/style.css">
+	</head>
+	<body>
+		<main style="display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;height:100vh;">
+			<h1>Choose a Game</h1>
+			<!-- Buttons navigate to the server routes /numbergame and /bottlegame -->
+			<div>
+				<button id="numberBtn" type="button" style="padding:12px 20px;margin-right:8px;">Number Game</button>
+				<button id="bottleBtn" type="button" style="padding:12px 20px;">Bottle Game</button>
+			</div>
+		</main>
+		<script>
+			document.getElementById('numberBtn').addEventListener('click', () => {
+				location.href = '/numbergame';
+			});
+			document.getElementById('bottleBtn').addEventListener('click', () => {
+				location.href = '/bottlegame';
+			});
+		</script>
+	</body>
+</html>
